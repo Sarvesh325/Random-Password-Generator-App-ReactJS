@@ -1,14 +1,16 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 function App() {
   const [length, setLength] = useState(6);
-  const [numberAllowed, setNumberAllowed] = useState(false);
-  const [characterAllowed, setCharacterAllowed] = useState(false);
+  const [numberAllowed, setNumberAllowed] = useState(true);
+  const [characterAllowed, setCharacterAllowed] = useState(true);
   const [password, setPassword] = useState("");
 
+  const refpass = useRef("null");
+
   const passwordG = useCallback(() => {
-    const pass = "";
-    const str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    let pass = "";
+    let str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     if (numberAllowed) {
       str += "0123456789";
     }
@@ -18,10 +20,20 @@ function App() {
 
     for (let i = 1; i <= length; i++) {
       let char = Math.floor(Math.random() * str.length + 1);
-      pass = str.charAt(char);
+      pass += str.charAt(char);
     }
     setPassword(pass);
-  }, [length, characterAllowed, numberAllowed]);
+  }, [length, characterAllowed, numberAllowed, setPassword]);
+
+  useEffect(() => {
+    passwordG();
+  }, [length, numberAllowed, characterAllowed, passwordG]);
+
+  const copyPass = useCallback(() => {
+    refpass.current?.select();
+    refpass.current?.setSelectionRange(0, 101);
+    window.navigator.clipboard.writeText(password);
+  }, [password]);
   return (
     <>
       <div className="container card mt-4 " style={{ backgroundColor: "grey" }}>
@@ -34,20 +46,26 @@ function App() {
             id="password"
             className="form-control p-2"
             onChange={(e) => setLength(e.target.value)}
+            value={password}
+            ref={refpass}
           />
           <div className="button text-center">
-            <button className="btn btn-primary  m-2">Copy To Clipboard</button>
+            <button className="btn btn-primary  m-2" onClick={copyPass}>
+              Copy To Clipboard
+            </button>
           </div>
           <div className="container text-center">
             <sapn className=" pt-5">
               <input
                 type="range"
                 name=""
-                id=""
+                id="range"
                 min={6}
                 max={100}
                 value={length}
-                className="cursor-pointer"
+                onChange={(e) => {
+                  setLength(e.target.value);
+                }}
               />
               <label className="label p-2 text-light">Length:{length}</label>
             </sapn>
@@ -56,7 +74,6 @@ function App() {
                 type="checkbox"
                 name="numberAllowed"
                 id="numberAllowed"
-                className="cursor-pointer"
                 defaultChecked="numberAllowed"
                 onChange={() => setNumberAllowed((prev) => !prev)}
               />
