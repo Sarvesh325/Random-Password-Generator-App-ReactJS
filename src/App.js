@@ -1,6 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 
 function App() {
+  const [length, setLength] = useState(6);
+  const [numberAllowed, setNumberAllowed] = useState(true);
+  const [characterAllowed, setCharacterAllowed] = useState(true);
+  const [password, setPassword] = useState("");
+
   return (
     <>
       <div className="container card mt-4 " style={{ backgroundColor: "grey" }}>
@@ -12,6 +17,7 @@ function App() {
             name="password"
             id="password"
             className="form-control p-2"
+            onChange={(e) => setLength(e.target.value)}
           />
           <div className="button text-center">
             <button className="btn btn-primary  m-2">Copy To Clipboard</button>
@@ -26,7 +32,7 @@ function App() {
                 max={100}
                 className="cursor-pointer"
               />
-              <label className="label p-2 text-light">Length</label>
+              <label className="label p-2 text-light">Length:{length}</label>
             </sapn>
             <span className="check-box-1 m-2">
               <input
@@ -35,6 +41,7 @@ function App() {
                 id="numberAllowed"
                 className="cursor-pointer"
                 defaultChecked="numberAllowed"
+                onChange={() => setNumberAllowed((prev) => !prev)}
               />
               <label className="check-box-2 ms-2 text-light">Numbers</label>
             </span>
@@ -45,6 +52,7 @@ function App() {
                 id="charactersAllowed"
                 className="cursor-pointer"
                 defaultChecked="charactersAllowed"
+                onChange={() => setCharacterAllowed((prev) => !prev)}
               />
               <label className="check-box-2 ms-2 text-light">Characters</label>
             </sapn>
