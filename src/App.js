@@ -1,11 +1,27 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 
 function App() {
   const [length, setLength] = useState(6);
-  const [numberAllowed, setNumberAllowed] = useState(true);
-  const [characterAllowed, setCharacterAllowed] = useState(true);
+  const [numberAllowed, setNumberAllowed] = useState(false);
+  const [characterAllowed, setCharacterAllowed] = useState(false);
   const [password, setPassword] = useState("");
 
+  const passwordG = useCallback(() => {
+    const pass = "";
+    const str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    if (numberAllowed) {
+      str += "0123456789";
+    }
+    if (characterAllowed) {
+      str += "!@#$%^&*()_+`~-=";
+    }
+
+    for (let i = 1; i <= length; i++) {
+      let char = Math.floor(Math.random() * str.length + 1);
+      pass = str.charAt(char);
+    }
+    setPassword(pass);
+  }, [length, characterAllowed, numberAllowed]);
   return (
     <>
       <div className="container card mt-4 " style={{ backgroundColor: "grey" }}>
@@ -30,6 +46,7 @@ function App() {
                 id=""
                 min={6}
                 max={100}
+                value={length}
                 className="cursor-pointer"
               />
               <label className="label p-2 text-light">Length:{length}</label>
